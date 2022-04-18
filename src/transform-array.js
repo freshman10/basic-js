@@ -13,9 +13,59 @@ const { NotImplementedError } = require('../extensions/index.js');
  * transform([1, 2, 3, '--discard-prev', 4, 5]) => [1, 2, 4, 5]
  * 
  */
-function transform(/* arr */) {
-  throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+function transform(arr) {
+  if(!Array.isArray(arr)){
+    throw new Error(`'arr' parameter must be an instance of the Array!`)
+  }
+
+ let answer = []
+ const commands = ["--discard-next", "--discard-prev", "--double-next", "--double-prev"]
+ for(let i = 0; i < arr.length; i++){
+   if(!commands.includes(arr[i])){
+     // no commands near
+     if(!commands.includes(arr[i-1]) && !commands.includes(arr[i+1])){
+       answer.push(arr[i])
+     }
+     // only command left
+     if(commands.includes(arr[i-1]) && !commands.includes(arr[i+1])){
+        if(arr[i-1] === "--double-next"){
+          answer.push(arr[i])
+          answer.push(arr[i])
+        }else if (arr[i-1]!=="--discard-next"){
+          answer.push(arr[i])
+        }
+     } 
+     // only command right
+     if(!commands.includes(arr[i-1]) && commands.includes(arr[i+1])){
+       if(arr[i+1]=== "--double-prev"){
+        answer.push(arr[i])
+        answer.push(arr[i])
+       }else if(arr[i+1]!== "--discard-prev"){
+        answer.push(arr[i])
+       }
+     }
+
+     // both sides command
+     if(commands.includes(arr[i-1]) && commands.includes(arr[i+1])){
+       if((arr[i-1] === "--double-prev" || arr[i-1] === "--discard-prev") && (arr[i+1] === "--double-next" || arr[i+1] === "discard-next")){
+          answer.push(arr[i])
+       }else if (arr[i-1] === "--discard-next"){
+         //pass
+       }else if (arr[i-1] === "--double-next" && arr[i+1] === "--double-prev"){
+        answer.push(arr[i])
+        answer.push(arr[i])
+        answer.push(arr[i])
+       }else if(arr[i-1] === "--double-next" && arr[i+1] === "--discard-prev"){
+        answer.push(arr[i])
+       }else if (arr[i+1] === "--double-prev"){
+        answer.push(arr[i])
+        answer.push(arr[i])
+       }
+     }
+   }
+ }
+ return answer
+
 }
 
 module.exports = {
